@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# python-bootstrap: insert the appropriate PYTHONPATH before
+#   invoking the python interpreter
+
+if [ -n "$PYTHONPATH" ]; then
+    PYTHONPATH="$PYTHONPATH:/usr/lib/mandelbrot/python2.6"
+else
+    PYTHONPATH="/usr/lib/mandelbrot/python2.6"
+fi
+
+exec env PYTHONPATH="$PYTHONPATH:/usr/lib/mandelbrot/python2.6" python $@
