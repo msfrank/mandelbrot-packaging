@@ -1,0 +1,21 @@
+#
+# notification rules file
+#
+
+# send all probe notifications to contact 'michael.frank'
+#when probe(*):              notify("michael.frank")
+
+# send all probe notifications to contact group 'sysadmins'
+when probe(*):              notify(@sysadmins)
+
+# send notification if expression does _not_ match
+#unless probe(fqdn:*):      drop()
+
+# ignore 'probe-updates' notifications
+#when kind(probe-updates):  drop()
+
+# use boolean logic
+# when probe(*:*/load) or probe(*:*/cpu): drop()
+
+# send notification to only the notifier(s) specified after the '->'
+#when probe(*):             notify() -> "debug"

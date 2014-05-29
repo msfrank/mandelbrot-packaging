@@ -1,0 +1,11 @@
+# server configuration
+JVM_OPTS="-Xms1024M -Xmx2048M"
+CONFIG="/etc/mandelbrot/mandelbrot-server.conf"
+
+# supervisor configuration
+SUPERVISORD="/usr/libexec/mandelbrot/supervisord"
+SUPERVISORCTL="/usr/libexec/mandelbrot/supervisorctl"
+SUPERVISOR_CONFIG="/etc/mandelbrot/supervisord.conf"
+SUPERVISOR_OPTIONS=""
+SUPERVISOR_PIDFILE="/var/run/mandelbrot/supervisord.pid"
+SUPERVISOR_WAIT_FOR_SUBPROCESSES="yes"

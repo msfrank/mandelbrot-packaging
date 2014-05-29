@@ -7,6 +7,11 @@ License:	    GPL
 URL:		    http://www.mandelbrot.io
 Source:         mandelbrot-server-%{version}-bin.tar.gz
 Source1:        supervisor-3.0.tar.gz
+Source2:        mandelbrot.sysvinit
+Source3:        mandelbrot.sysconfig
+Source4:        mandelbrot-server.conf
+Source5:        notification.rules
+Source6:        supervisord.conf
 BuildRoot:	    %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:	mandelbrot-common, python-setuptools
 Requires:	    mandelbrot-common, python-setuptools
@@ -31,12 +36,16 @@ PYTHON=/usr/libexec/mandelbrot/python-bootstrap
 JAVALIB_DIR=$RPM_BUILD_ROOT/usr/lib/mandelbrot/java
 PYLIB_DIR=$RPM_BUILD_ROOT/usr/lib/mandelbrot/python2.6
 LIBEXEC_DIR=$RPM_BUILD_ROOT/usr/libexec/mandelbrot
+ETC_DIR=$RPM_BUILD_ROOT/etc/mandelbrot
 INITD_DIR=$RPM_BUILD_ROOT/etc/rc.d/init.d
 SYSCONFIG_DIR=$RPM_BUILD_ROOT/etc/sysconfig
 
 mkdir -p $JAVALIB_DIR
 mkdir -p $PYLIB_DIR
 mkdir -p $LIBEXEC_DIR
+mkdir -p $ETC_DIR
+mkdir -p $INITD_DIR
+mkdir -p $SYSCONFIG_DIR
 
 # install supervisord
 pushd supervisor-3.0
@@ -53,9 +62,27 @@ popd
 pushd mandelbrot-server-%{version}-bin
 cp target/scala-2.10/*.jar $JAVALIB_DIR
 
+# copy default server config
+cp $RPM_SOURCE_DIR/mandelbrot-server.conf $ETC_DIR
+cp $RPM_SOURCE_DIR/notification.rules $ETC_DIR
+
+# install sysvinit script
+cp $RPM_SOURCE_DIR/mandelbrot-server-start $LIBEXEC_DIR
+cp $RPM_SOURCE_DIR/mandelbrot.sysvinit $INITD_DIR/mandelbrot
+cp $RPM_SOURCE_DIR/mandelbrot.sysconfig $SYSCONFIG_DIR/mandelbrot
+cp $RPM_SOURCE_DIR/supervisord.conf $ETC_DIR/supervisord.conf
+
 
 %clean
 rm -rf %{buildroot}
+
+
+%post
+ln -s /usr/lib/mandelbrot/java/mandelbrot-server_2.10-%{version}-one-jar.jar /usr/lib/mandelbrot/java/mandelbrot-server-one-jar.jar
+
+
+%preun
+rm -f /usr/lib/mandelbrot/java/mandelbrot-server-one-jar.jar
 
 
 %files
@@ -63,6 +90,11 @@ rm -rf %{buildroot}
 /usr/lib/mandelbrot/java
 /usr/lib/mandelbrot/python2.6
 /usr/libexec/mandelbrot
+/etc/rc.d/init.d/mandelbrot
+%config /etc/sysconfig/mandelbrot
+%config /etc/mandelbrot/mandelbrot-server.conf
+%config /etc/mandelbrot/notification.rules
+%config /etc/mandelbrot/supervisord.conf
 
 
 %changelog

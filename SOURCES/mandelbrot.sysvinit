@@ -1,0 +1,101 @@
+#!/bin/bash
+#
+# mandelbrot -  Runs mandelbrot service via supervisord
+#
+# Author:       Michael Frank <msfrank@syntaxjockey.com>
+#               Jason Koppe <jkoppe@indeed.com> (based off https://github.com/Supervisor/initscripts/blob/master/redhat-init-jkoppe)
+#               Mike McGrath <mmcgrath@redhat.com> (based off yumupdatesd)
+#
+# chkconfig:    345 83 04
+#
+# description:  mandelbrot
+# processname:  supervisord
+#
+
+# defaults
+SUPERVISORD="/usr/libexec/mandelbrot/supervisord"
+SUPERVISORCTL="/usr/libexec/mandelbrot/supervisorctl"
+SUPERVISOR_CONFIG="/etc/mandelbrot/supervisord.conf"
+SUPERVISOR_OPTIONS=""
+SUPERVISOR_PIDFILE="/var/run/mandelbrot-server.pid"
+SUPERVISOR_WAIT_FOR_SUBPROCESSES="yes"
+
+# source function library
+. /etc/rc.d/init.d/functions
+
+# source system settings
+[ -e /etc/sysconfig/mandelbrot ] && . /etc/sysconfig/mandelbrot
+
+RETVAL=0
+
+start() {
+    echo "Starting mandelbrot: "
+    if [ -e $SUPERVISOR_PIDFILE ]; then 
+        echo "mandelbrot is already running"
+        return 1
+    fi
+    $SUPERVISORD --configuration $SUPERVISOR_CONFIG --pidfile $SUPERVISOR_PIDFILE
+    [ -e $SUPERVISOR_PIDFILE ] && touch /var/lock/subsys/mandelbrot
+}
+
+stop() {
+    echo -n "Stopping mandelbrot: "
+    kill -TERM $(cat $SUPERVISOR_PIDFILE)
+    if [ -n "$SUPERVISOR_WAIT_FOR_SUBPROCESSES" ]; then 
+        echo "Waiting roughly 60 seconds for $SUPERVISOR_PIDFILE to be removed after child processes exit"
+        for sleep in  2 2 2 2 4 4 4 4 8 8 8 8 last; do
+            if [ ! -e $SUPERVISOR_PIDFILE ] ; then
+                echo "mandelbrot exited as expected in under $total_sleep seconds"
+                break
+            else
+                if [[ $sleep -eq "last" ]] ; then
+                    echo "mandelbrot is still running"
+                    return 1
+                else
+                    sleep $sleep
+                    total_sleep=$(( $total_sleep + $sleep ))
+                fi
+            fi
+        done
+    fi
+
+    # always remove the subsys.  we might have waited a while, but just remove it at this point.
+    rm -f /var/lock/subsys/mandelbrot
+}
+
+restart() {
+        stop
+        start
+}
+
+case "$1" in
+    start)
+        start
+        RETVAL=$?
+        ;;
+    stop)
+        stop
+        RETVAL=$?
+        ;;
+    restart|force-reload)
+        restart
+        RETVAL=$?
+        ;;
+    reload)
+        $SUPERVISORCTL $SUPERVISOR_OPTIONS reload
+        RETVAL=$?
+        ;;
+    condrestart)
+        [ -f /var/lock/subsys/mandelbrot ] && restart
+        RETVAL=$?
+        ;;
+    status)
+        $SUPERVISORCTL status
+        RETVAL=$?
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|reload|force-reload|condrestart}"
+        exit 1
+esac
+
+exit $RETVAL

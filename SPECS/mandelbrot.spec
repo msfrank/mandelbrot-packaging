@@ -5,7 +5,8 @@ Summary:	    Mandelbrot network monitoring system - client and agent utilities
 Group:		    System Environment/Daemons
 License:	    GPL
 URL:		    http://www.mandelbrot.io
-Source0:	    mandelbrot-%{version}.tar.gz
+Source:	        mandelbrot-%{version}.tar.gz
+Source1:        mandelbrot.conf
 BuildRoot:	    %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:	mandelbrot-common, python-setuptools
 Requires:	    mandelbrot-common, python-setuptools
@@ -30,11 +31,13 @@ PYLIB_DIR=$RPM_BUILD_ROOT/usr/lib/mandelbrot/python2.6
 LIBEXEC_DIR=$RPM_BUILD_ROOT/usr/libexec/mandelbrot
 BIN_DIR=$RPM_BUILD_ROOT/usr/bin
 SBIN_DIR=$RPM_BUILD_ROOT/usr/sbin
+ETC_DIR=$RPM_BUILD_ROOT/etc/mandelbrot
 
 mkdir -p $PYLIB_DIR
 mkdir -p $LIBEXEC_DIR
 mkdir -p $BIN_DIR
 mkdir -p $SBIN_DIR
+mkdir -p $ETC_DIR
 
 export PYTHONPATH=$PYLIB_DIR
 $PYTHON ./setup.py pesky_default --command flush
@@ -49,6 +52,8 @@ rm -f $LIBEXEC_DIR/easy_install*
 mv $LIBEXEC_DIR/mandelbrot $BIN_DIR
 mv $LIBEXEC_DIR/mandelbrot-agent $SBIN_DIR
 
+cp $RPM_SOURCE_DIR/mandelbrot.conf $ETC_DIR
+
 
 %clean
 rm -rf %{buildroot}
@@ -60,6 +65,7 @@ rm -rf %{buildroot}
 /usr/libexec/mandelbrot
 /usr/bin/mandelbrot
 /usr/sbin/mandelbrot-agent
+%config /etc/mandelbrot/mandelbrot.conf
 
 
 %changelog

@@ -1,0 +1,21 @@
+#!/bin/bash
+#
+# mandelbrot-server-start
+#
+# Author:       Michael Frank <msfrank@syntaxjockey.com>
+
+# defaults
+JAVA="/usr/bin/java"
+JVM_OPTS="-Xms1024M -Xmx2048M"
+CONFIG="/etc/mandelbrot/mandelbrot-server.conf"
+JAR="/usr/lib/mandelbrot/java/mandelbrot-server-one-jar.jar"
+
+# source system settings
+[ -e /etc/sysconfig/mandelbrot ] && . /etc/sysconfig/mandelbrot
+
+echo "Using jvm $JAVA"
+echo "Java options: $JAVA_OPTS"
+echo "Config: $CONFIG"
+echo "Jar: $JAR"
+
+exec $JAVA $JVM_OPTS -Dmandelbrot.config.file=$CONFIG -jar $JAR

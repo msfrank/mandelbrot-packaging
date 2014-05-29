@@ -35,6 +35,7 @@ cp $RPM_SOURCE_DIR/python-bootstrap $LIBEXEC_DIR
 mkdir -p %{buildroot}/etc/mandelbrot
 mkdir -p %{buildroot}/var/lib/mandelbrot
 mkdir -p %{buildroot}/var/run/mandelbrot
+mkdir -p %{buildroot}/var/log/mandelbrot
 
 
 %clean
@@ -48,6 +49,7 @@ rm -rf %{buildroot}
 /etc/mandelbrot
 /var/lib/mandelbrot
 /var/run/mandelbrot
+/var/log/mandelbrot
 
 
 %changelog
