@@ -41,6 +41,7 @@ mkdir -p $ETC_DIR
 
 export PYTHONPATH=$PYLIB_DIR
 $PYTHON ./setup.py pesky_default --command flush
+$PYTHON ./setup.py pesky_default --command set --key SYSCONF_DIR --value /etc/mandelbrot
 $PYTHON ./setup.py \
         build_scripts --executable $PYTHON \
         install --install-lib $PYLIB_DIR --install-scripts $LIBEXEC_DIR \
