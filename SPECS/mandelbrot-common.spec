@@ -45,7 +45,6 @@ rm -rf %{buildroot}
 %defattr(0755,root,root,-)
 /usr/lib/mandelbrot
 /usr/libexec/mandelbrot
-/usr/libexec/mandelbrot/python-bootstrap
 /etc/mandelbrot
 /var/lib/mandelbrot
 /var/run/mandelbrot

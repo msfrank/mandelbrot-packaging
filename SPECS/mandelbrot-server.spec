@@ -45,7 +45,7 @@ $PYTHON ./setup.py \
         build_scripts --executable $PYTHON \
         install --install-lib $PYLIB_DIR --install-scripts $LIBEXEC_DIR \
         install_scripts
-rm -f $PYLIBDIR/*.pth $PYLIBDIR/site.py*
+rm -f $PYLIB_DIR/*.pth $PYLIB_DIR/site.py*
 rm -f $LIBEXEC_DIR/easy_install*
 popd
 
@@ -67,3 +67,5 @@ rm -rf %{buildroot}
 
 %changelog
 
+* Thu May 29 2014 Michael Frank <syntaxjockey@gmail.com> 0.0.4-1
+- Initial RPM release

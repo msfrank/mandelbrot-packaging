@@ -26,22 +26,25 @@ rm -rf %{buildroot}
 
 PYTHON=/usr/libexec/mandelbrot/python-bootstrap
 
-LIB_DIR=$RPM_BUILD_ROOT/usr/lib/mandelbrot/python2.6
+PYLIB_DIR=$RPM_BUILD_ROOT/usr/lib/mandelbrot/python2.6
 LIBEXEC_DIR=$RPM_BUILD_ROOT/usr/libexec/mandelbrot
 BIN_DIR=$RPM_BUILD_ROOT/usr/bin
 SBIN_DIR=$RPM_BUILD_ROOT/usr/sbin
 
-mkdir -p $LIB_DIR
+mkdir -p $PYLIB_DIR
 mkdir -p $LIBEXEC_DIR
 mkdir -p $BIN_DIR
 mkdir -p $SBIN_DIR
 
-export PYTHONPATH=$LIB_DIR
+export PYTHONPATH=$PYLIB_DIR
 $PYTHON ./setup.py pesky_default --command flush
 $PYTHON ./setup.py \
         build_scripts --executable $PYTHON \
-        install --install-lib $LIB_DIR --install-scripts $LIBEXEC_DIR \
+        install --install-lib $PYLIB_DIR --install-scripts $LIBEXEC_DIR \
         install_scripts
+rm -f $PYLIB_DIR/*.pth $PYLIB_DIR/site.py*
+rm -f $LIBEXEC_DIR/easy_install*
+
 
 mv $LIBEXEC_DIR/mandelbrot $BIN_DIR
 mv $LIBEXEC_DIR/mandelbrot-agent $SBIN_DIR
@@ -61,3 +64,5 @@ rm -rf %{buildroot}
 
 %changelog
 
+* Thu May 29 2014 Michael Frank <syntaxjockey@gmail.com> 0.0.4-1
+- Initial RPM release
