@@ -13,9 +13,11 @@ JAR="/usr/lib/mandelbrot/java/mandelbrot-server-one-jar.jar"
 # source system settings
 [ -e /etc/sysconfig/mandelbrot ] && . /etc/sysconfig/mandelbrot
 
+echo "-------- starting at `date` --------"
 echo "Using jvm $JAVA"
-echo "Java options: $JAVA_OPTS"
+echo "Java options: $JVM_OPTS"
 echo "Config: $CONFIG"
 echo "Jar: $JAR"
+echo
 
 exec $JAVA $JVM_OPTS -Dmandelbrot.config.file=$CONFIG -jar $JAR

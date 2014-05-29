@@ -61,13 +61,13 @@ popd
 # copy the server jars
 pushd mandelbrot-server-%{version}-bin
 cp target/scala-2.10/*.jar $JAVALIB_DIR
+cp $RPM_SOURCE_DIR/mandelbrot-server-start $LIBEXEC_DIR
 
 # copy default server config
 cp $RPM_SOURCE_DIR/mandelbrot-server.conf $ETC_DIR
 cp $RPM_SOURCE_DIR/notification.rules $ETC_DIR
 
 # install sysvinit script
-cp $RPM_SOURCE_DIR/mandelbrot-server-start $LIBEXEC_DIR
 cp $RPM_SOURCE_DIR/mandelbrot.sysvinit $INITD_DIR/mandelbrot
 cp $RPM_SOURCE_DIR/mandelbrot.sysconfig $SYSCONFIG_DIR/mandelbrot
 cp $RPM_SOURCE_DIR/supervisord.conf $ETC_DIR/supervisord.conf
