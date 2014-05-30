@@ -85,7 +85,7 @@ case "$1" in
         $SUPERVISORCTL $SUPERVISOR_OPTIONS reload
         RETVAL=$?
         ;;
-    condrestart)
+    condrestart|try-restart)
         [ -f /var/lock/subsys/mandelbrot ] && restart
         RETVAL=$?
         ;;
@@ -94,7 +94,7 @@ case "$1" in
         RETVAL=$?
         ;;
     *)
-        echo $"Usage: $0 {start|stop|status|restart|reload|force-reload|condrestart}"
+        echo $"Usage: $0 {start|stop|status|restart|reload|force-reload|condrestart|try-restart}"
         exit 1
 esac
 

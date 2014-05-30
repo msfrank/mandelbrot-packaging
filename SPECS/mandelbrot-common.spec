@@ -48,6 +48,7 @@ getent group mandelbrot >/dev/null || groupadd -r mandelbrot
 getent passwd mandelbrot >/dev/null || \
     useradd -r -g mandelbrot -d /var/lib/mandelbrot -s /sbin/nologin \
     -c "Mandelbrot network monitoring system" mandelbrot
+exit 0  # don't fail the install if user/group creation fails
 
 
 %files

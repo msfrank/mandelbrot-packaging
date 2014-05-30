@@ -1,20 +1,23 @@
-Name:		    mandelbrot-server
-Version:	    0.0.4
-Release:	    1%{?dist}
-Summary:	    Mandelbrot network monitoring system - server
-Group:		    System Environment/Daemons
-License:	    GPL
-URL:		    http://www.mandelbrot.io
-Source:         mandelbrot-server-%{version}-bin.tar.gz
-Source1:        supervisor-3.0.tar.gz
-Source2:        mandelbrot.sysvinit
-Source3:        mandelbrot.sysconfig
-Source4:        mandelbrot-server.conf
-Source5:        notification.rules
-Source6:        supervisord.conf
-BuildRoot:	    %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires:	mandelbrot-common, python-setuptools
-Requires:	    mandelbrot-common, python-setuptools
+Name:		        mandelbrot-server
+Version:	        0.0.4
+Release:	        1%{?dist}
+Summary:	        Mandelbrot network monitoring system - server
+Group:		        System Environment/Daemons
+License:	        GPL
+URL:		        http://www.mandelbrot.io
+Source:             mandelbrot-server-%{version}-bin.tar.gz
+Source1:            supervisor-3.0.tar.gz
+Source2:            mandelbrot.sysvinit
+Source3:            mandelbrot.sysconfig
+Source4:            mandelbrot-server.conf
+Source5:            notification.rules
+Source6:            supervisord.conf
+BuildRoot:	        %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+BuildRequires:	    mandelbrot-common, python-setuptools
+Requires:	        mandelbrot-common, python-setuptools
+Requires(post):     chkconfig
+Requires(preun):    chkconfig, initscripts
+Requires(postun):   initscripts
 
 %description
 Mandelbrot network monitoring system - server
@@ -79,10 +82,21 @@ rm -rf %{buildroot}
 
 %post
 ln -s /usr/lib/mandelbrot/java/mandelbrot-server_2.10-%{version}-one-jar.jar /usr/lib/mandelbrot/java/mandelbrot-server-one-jar.jar
+/sbin/chkconfig --add mandelbrot
 
 
 %preun
+if [ $1 -eq 0 ] ; then
+    /sbin/service mandelbrot stop >/dev/null 2>&1
+    /sbin/chkconfig --del mandelbrot
+fi
 rm -f /usr/lib/mandelbrot/java/mandelbrot-server-one-jar.jar
+
+
+%postun
+if [ "$1" -ge "1" ] ; then
+    /sbin/service mandelbrot condrestart >/dev/null 2>&1 || :
+fi
 
 
 %files
