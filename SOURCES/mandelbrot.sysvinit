@@ -16,8 +16,9 @@
 SUPERVISORD="/usr/libexec/mandelbrot/supervisord"
 SUPERVISORCTL="/usr/libexec/mandelbrot/supervisorctl"
 SUPERVISOR_CONFIG="/etc/mandelbrot/supervisord.conf"
+SUPERVISOR_USER="mandelbrot"
+SUPERVISOR_PIDFILE="/var/run/mandelbrot/supervisord.pid"
 SUPERVISOR_OPTIONS=""
-SUPERVISOR_PIDFILE="/var/run/mandelbrot-server.pid"
 SUPERVISOR_WAIT_FOR_SUBPROCESSES="yes"
 
 # source function library
@@ -34,7 +35,7 @@ start() {
         echo "mandelbrot is already running"
         return 1
     fi
-    $SUPERVISORD --configuration $SUPERVISOR_CONFIG --pidfile $SUPERVISOR_PIDFILE
+    $SUPERVISORD -c $SUPERVISOR_CONFIG --user $SUPERVISOR_USER --pidfile $SUPERVISOR_PIDFILE $SUPERVISOR_OPTIONS
     [ -e $SUPERVISOR_PIDFILE ] && touch /var/lock/subsys/mandelbrot
 }
 
