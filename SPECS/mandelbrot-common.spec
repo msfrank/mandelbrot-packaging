@@ -1,14 +1,15 @@
-Name:		mandelbrot-common
-Version:	0.0.4
-Release:	1%{?dist}
-Summary:	Mandelbrot network monitoring system - common tools
-Group:		System Environment/Daemons
-License:	GPL
-URL:		http://www.mandelbrot.io
-Source0:	python-bootstrap
-BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+Name:		    mandelbrot-common
+Version:	    0.0.4
+Release:	    1%{?dist}
+Summary:	    Mandelbrot network monitoring system - common tools
+Group:		    System Environment/Daemons
+License:	    GPL
+URL:		    http://www.mandelbrot.io
+Source0:	    python-bootstrap
+BuildRoot:	    %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:	python-setuptools
-Requires:	python-setuptools
+Requires:	    python-setuptools
+Requires(pre):  shadow-utils
 
 %description
 Mandelbrot network monitoring system - common tools
@@ -42,15 +43,24 @@ mkdir -p %{buildroot}/var/log/mandelbrot
 rm -rf %{buildroot}
 
 
+%pre
+getent group mandelbrot >/dev/null || groupadd -r mandelbrot
+getent passwd mandelbrot >/dev/null || \
+    useradd -r -g mandelbrot -d /var/lib/mandelbrot -s /sbin/nologin \
+    -c "Mandelbrot network monitoring system" mandelbrot
+
+
 %files
 %defattr(0755,root,root,-)
 /usr/lib/mandelbrot
 /usr/libexec/mandelbrot
 /etc/mandelbrot
-/var/lib/mandelbrot
-/var/run/mandelbrot
-/var/log/mandelbrot
+%attr(0755,mandelbrot,mandelbrot)     /var/lib/mandelbrot
+%attr(0755,mandelbrot,mandelbrot)     /var/run/mandelbrot
+%attr(0755,mandelbrot,mandelbrot)     /var/log/mandelbrot
 
 
 %changelog
 
+* Fri May 30 2014 Michael Frank <syntaxjockey@gmail.com> 0.0.4-1
+- Initial RPM release
