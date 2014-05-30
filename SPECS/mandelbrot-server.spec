@@ -7,8 +7,8 @@ License:	        GPL
 URL:		        http://www.mandelbrot.io
 Source:             mandelbrot-server-%{version}-bin.tar.gz
 Source1:            supervisor-3.0.tar.gz
-Source2:            mandelbrot.sysvinit
-Source3:            mandelbrot.sysconfig
+Source2:            mandelbrot-server.sysvinit
+Source3:            mandelbrot-server.sysconfig
 Source4:            mandelbrot-server.conf
 Source5:            notification.rules
 Source6:            supervisord.conf
@@ -71,8 +71,8 @@ cp $RPM_SOURCE_DIR/mandelbrot-server.conf $ETC_DIR
 cp $RPM_SOURCE_DIR/notification.rules $ETC_DIR
 
 # install sysvinit script
-cp $RPM_SOURCE_DIR/mandelbrot.sysvinit $INITD_DIR/mandelbrot
-cp $RPM_SOURCE_DIR/mandelbrot.sysconfig $SYSCONFIG_DIR/mandelbrot
+cp $RPM_SOURCE_DIR/mandelbrot-server.sysvinit $INITD_DIR/mandelbrot-server
+cp $RPM_SOURCE_DIR/mandelbrot-server.sysconfig $SYSCONFIG_DIR/mandelbrot-server
 cp $RPM_SOURCE_DIR/supervisord.conf $ETC_DIR/supervisord.conf
 
 
@@ -82,20 +82,20 @@ rm -rf %{buildroot}
 
 %post
 ln -s /usr/lib/mandelbrot/java/mandelbrot-server_2.10-%{version}-one-jar.jar /usr/lib/mandelbrot/java/mandelbrot-server-one-jar.jar
-/sbin/chkconfig --add mandelbrot
+/sbin/chkconfig --add mandelbrot-server
 
 
 %preun
 if [ $1 -eq 0 ] ; then
-    /sbin/service mandelbrot stop >/dev/null 2>&1
-    /sbin/chkconfig --del mandelbrot
+    /sbin/service mandelbrot-server stop >/dev/null 2>&1
+    /sbin/chkconfig --del mandelbrot-server
 fi
 rm -f /usr/lib/mandelbrot/java/mandelbrot-server-one-jar.jar
 
 
 %postun
 if [ "$1" -ge "1" ] ; then
-    /sbin/service mandelbrot condrestart >/dev/null 2>&1 || :
+    /sbin/service mandelbrot-server condrestart >/dev/null 2>&1 || :
 fi
 
 
@@ -104,8 +104,8 @@ fi
 /usr/lib/mandelbrot/java
 /usr/lib/mandelbrot/python2.6
 /usr/libexec/mandelbrot
-/etc/rc.d/init.d/mandelbrot
-%config /etc/sysconfig/mandelbrot
+/etc/rc.d/init.d/mandelbrot-server
+%config /etc/sysconfig/mandelbrot-server
 %config /etc/mandelbrot/mandelbrot-server.conf
 %config /etc/mandelbrot/notification.rules
 %config /etc/mandelbrot/supervisord.conf
