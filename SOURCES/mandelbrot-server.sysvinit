@@ -83,7 +83,7 @@ case "$1" in
         RETVAL=$?
         ;;
     reload)
-        $SUPERVISORCTL $SUPERVISOR_OPTIONS reload
+        $SUPERVISORCTL -c $SUPERVISOR_CONFIG $SUPERVISOR_OPTIONS reload
         RETVAL=$?
         ;;
     condrestart|try-restart)
@@ -91,7 +91,7 @@ case "$1" in
         RETVAL=$?
         ;;
     status)
-        $SUPERVISORCTL status
+        $SUPERVISORCTL -c $SUPERVISOR_CONFIG status
         RETVAL=$?
         ;;
     *)
